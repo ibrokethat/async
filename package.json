@@ -1,0 +1,29 @@
+{
+  "name": "ibt-async",
+  "description": "ibrokethat promises",
+  "version": "0.0.1",
+  "author": "si@ibrokethat.com",
+  "contributors": [
+    { "name": "Simon Jefford", "email": "si@ibrokethat.com" }
+  ],
+  "dependencies": {
+    "ibt-Object": "git+ssh://git@github.com:ibrokethat/ibt-Object",
+    "ibt-is": "git+ssh://git@github.com:ibrokethat/ibt-is",
+    "ibt-func": "git+ssh://git@github.com:ibrokethat/ibt-func"
+  },
+  "devDependencies": {
+    "mocha": "1.2.x",
+    "sinon": "1.3.x"
+  },
+  "keywords": ["ibrokethat", "async"],
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:ibrokethat/ibt-async"
+  },
+  "main": "index",
+  "scripts": {
+    "prepublish" : "npm prune",
+    "test": "mocha -u bdd"
+  },
+  "engines": { "node": "*" }
+}
