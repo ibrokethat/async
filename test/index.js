@@ -1,6 +1,6 @@
 var assert  = require("assert"),
     sinon   = require("sinon"),
-    async   = require("../index"),
+    async   = require("../ibt-async"),
     when    = async.when,
     Promise = async.Promise,
     fakes, promise;
