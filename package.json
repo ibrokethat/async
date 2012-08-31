@@ -20,7 +20,7 @@
     "type": "git",
     "url": "git@github.com:ibrokethat/ibt-async"
   },
-  "main": "index",
+  "main": "ibt-async",
   "scripts": {
     "prepublish" : "npm prune",
     "test": "mocha -u bdd"
