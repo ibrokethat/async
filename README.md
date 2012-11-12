@@ -1,17 +1,17 @@
-# ibt-async
+# async
 
 Promises
 
 ## Install
 
-       npm install ibt-async
+       npm install async
 
 
-##  What is ibt-async?
+##  What is async?
 
 
 
-##  Using ibt-async
+##  Using async
 
 
 ## License

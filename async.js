@@ -1,10 +1,10 @@
 /**
   @description  iteration
 */
-require("ibt-Object");
+require("Object");
 
-var is      = require("ibt-is"),
-    func    = require("ibt-func"),
+var is      = require("is"),
+    func    = require("func"),
     enforce = is.enforce,
     typeOf  = is.typeOf,
     partial = func.partial,
