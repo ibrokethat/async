@@ -3,13 +3,13 @@
 */
 require("Object");
 
-var is      = require("is"),
-    func    = require("func"),
-    enforce = is.enforce,
-    typeOf  = is.typeOf,
-    partial = func.partial,
-    bind    = func.bind,
-    Promise;
+var is      = require("is");
+var func    = require("func");
+var enforce = is.enforce;
+var typeOf  = is.typeOf;
+var partial = func.partial;
+var bind    = func.bind;
+var Promise;
 
 /**
   @description  a lightweight promise implementation
@@ -133,5 +133,28 @@ function when(value) {
 }
 
 
+
+/**
+  @description  wraps a function in a function that passes a promise to the wrapped function, and returns the promise
+  @param        {function} func
+  @return       {Promise}
+*/
+function promise(func) {
+
+  return function() {
+
+    var p = Promise.spawn();
+
+    arguments[arguments.length] = p;
+    func.apply(null, arguments);
+
+    return p;
+
+  }
+
+}
+
+
 exports.Promise = Promise;
 exports.when    = when;
+exports.promise = promise;
