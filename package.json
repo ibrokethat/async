@@ -9,6 +9,7 @@
   "dependencies": {
     "Object": "git+ssh://git@github.com:ibrokethat/Object",
     "is": "git+ssh://git@github.com:ibrokethat/is",
+    "iter": "git+ssh://git@github.com:ibrokethat/iter",
     "func": "git+ssh://git@github.com:ibrokethat/func"
   },
   "devDependencies": {
@@ -20,7 +21,10 @@
     "type": "git",
     "url": "git@github.com:ibrokethat/async"
   },
-  "main": "async",
+  "ibrokethat": {
+    "buildClient": true
+  },
+  "main": "async.js",
   "scripts": {
     "prepublish" : "npm prune",
     "test": "mocha -u bdd"

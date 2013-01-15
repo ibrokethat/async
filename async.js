@@ -1,14 +1,19 @@
 /**
-  @description  iteration
+
+  @description  async functions
+  @author       si@ibrokethat.com
+
 */
 require("Object");
 
-var is      = require("is");
-var func    = require("func");
-var enforce = is.enforce;
-var typeOf  = is.typeOf;
-var partial = func.partial;
-var bind    = func.bind;
+var is       = require("is");
+var func     = require("func");
+var iter     = require("iter");
+var enforce  = is.enforce;
+var typeOf   = is.typeOf;
+var lateBind = func.lateBind;
+var bind     = func.bind;
+var toArray  = iter.toArray;
 var Promise;
 
 /**
@@ -109,14 +114,14 @@ Promise = {
   @description  resolve the promise
   @param        {any} result
 */
-Promise.resolve = bind(Promise._exhaust, Promise.STATUS_RESOLVED);
+Promise.resolve = lateBind(Promise._exhaust, Promise.STATUS_RESOLVED);
 
 
 /**
   @description  reject the promise
   @param        {any} result
 */
-Promise.reject = bind(Promise._exhaust, Promise.STATUS_REJECTED);
+Promise.reject = lateBind(Promise._exhaust, Promise.STATUS_REJECTED);
 
 
 
@@ -135,22 +140,21 @@ function when(value) {
 
 
 /**
-  @description  wraps a function in a function that passes a promise to the wrapped function, and returns the promise
+  @description  calls a function, passing in a promise and binding any incoming parameters
   @param        {function} func
+  @param        {any} args1...
   @return       {Promise}
 */
-function promise(func) {
+function promise (func) {
 
-  return function() {
+  var p    = Promise.spawn();
+  var args = toArray(arguments, 1);
 
-    var p = Promise.spawn();
+  args.push(p);
+  func.apply(null, args);
 
-    arguments[arguments.length] = p;
-    func.apply(null, arguments);
+  return p;
 
-    return p;
-
-  }
 
 }
 
