@@ -1,9 +1,10 @@
-var assert  = require("assert"),
-    sinon   = require("sinon"),
-    async   = require("../async"),
-    when    = async.when,
-    Promise = async.Promise,
-    fakes, promise;
+var assert = require("assert"),
+    sinon = require("sinon"),
+    async = require("../async"),
+    when = async.when,
+    whenAll = async.whenAll,
+    promise = async.promise,
+    fakes, p;
 
 
 describe("test async module: ", function() {
@@ -12,14 +13,14 @@ describe("test async module: ", function() {
   beforeEach(function() {
 
     fakes = sinon.sandbox.create();
-    promise = Promise.spawn();
+    p = promise();
 
   });
 
   afterEach(function() {
 
     fakes.restore();
-    promise = null;
+    p = null;
 
   });
 
@@ -28,58 +29,58 @@ describe("test async module: ", function() {
 
     it("should have 4 possible states", function() {
 
-      assert.equal(-1, Promise.STATUS_PENDING);
-      assert.equal(0, Promise.STATUS_RESOLVED);
-      assert.equal(1, Promise.STATUS_REJECTED);
-      assert.equal(2, Promise.STATUS_CANCELLED);
+      assert.equal(-1, promise.proto.STATUS_PENDING);
+      assert.equal(0, promise.proto.STATUS_RESOLVED);
+      assert.equal(1, promise.proto.STATUS_REJECTED);
+      assert.equal(2, promise.proto.STATUS_CANCELLED);
 
     });
 
 
     it("should have state -1 on creation", function() {
 
-      assert.equal(-1, promise.status);
+      assert.equal(-1, p.status);
 
     });
 
     it("should have state 0 if resolved", function() {
 
-      promise.resolve();
-      assert.equal(0, promise.status);
+      p.resolve();
+      assert.equal(0, p.status);
 
     });
 
     it("should have state 1 if rejected", function() {
 
-      promise.reject();
-      assert.equal(1, promise.status);
+      p.reject();
+      assert.equal(1, p.status);
 
     });
 
     it("should have state 2 if cancelled", function() {
 
-      promise.cancel();
-      assert.equal(2, promise.status);
+      p.cancel();
+      assert.equal(2, p.status);
 
     });
 
     it("should register callbacks or false", function() {
 
-      promise.then(false, sinon.spy());
-      promise.then(sinon.spy(), false);
-      promise.then(sinon.spy(), sinon.spy());
-      promise.then(false, false);
+      p.then(false, sinon.spy());
+      p.then(sinon.spy(), false);
+      p.then(sinon.spy(), sinon.spy());
+      p.then(false, false);
 
-      assert.equal(4, promise.deferreds.length);
+      assert.equal(4, p.deferreds.length);
 
-      assert.equal("boolean", typeof promise.deferreds[0][0]);
-      assert.equal("function", typeof promise.deferreds[0][1]);
-      assert.equal("function", typeof promise.deferreds[1][0]);
-      assert.equal("boolean", typeof promise.deferreds[1][1]);
-      assert.equal("function", typeof promise.deferreds[2][0]);
-      assert.equal("function", typeof promise.deferreds[2][1]);
-      assert.equal("boolean", typeof promise.deferreds[3][0]);
-      assert.equal("boolean", typeof promise.deferreds[3][1]);
+      assert.equal("boolean", typeof p.deferreds[0][0]);
+      assert.equal("function", typeof p.deferreds[0][1]);
+      assert.equal("function", typeof p.deferreds[1][0]);
+      assert.equal("boolean", typeof p.deferreds[1][1]);
+      assert.equal("function", typeof p.deferreds[2][0]);
+      assert.equal("function", typeof p.deferreds[2][1]);
+      assert.equal("boolean", typeof p.deferreds[3][0]);
+      assert.equal("boolean", typeof p.deferreds[3][1]);
 
     });
 
@@ -88,11 +89,11 @@ describe("test async module: ", function() {
 
 
       assert.throws(function() {
-        promise.then({}, false);
+        p.then({}, false);
       });
 
       assert.throws(function() {
-        promise.then(false, {});
+        p.then(false, {});
       });
 
 
@@ -102,7 +103,7 @@ describe("test async module: ", function() {
     it("should immediately resolve if created with an initial value", function() {
 
       var r = 0,
-          p = Promise.spawn(10);
+          p = promise(10);
 
       assert.equal(0, r);
       assert.equal(0, p.status);
@@ -121,10 +122,10 @@ describe("test async module: ", function() {
       var success = sinon.spy(),
           fail = sinon.spy();
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
-      promise.resolve("test");
+      p.resolve("test");
 
       assert.equal(2, success.callCount);
       assert.equal("test", success.args[0][0]);
@@ -132,8 +133,8 @@ describe("test async module: ", function() {
 
       assert.equal(0, fail.callCount);
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
       assert.equal(4, success.callCount);
       assert.equal("test", success.args[0][0]);
@@ -148,10 +149,10 @@ describe("test async module: ", function() {
       var success = sinon.spy(),
           fail = sinon.spy();
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
-      promise.reject("test");
+      p.reject("test");
 
       assert.equal(2, fail.callCount);
       assert.equal("test", fail.args[0][0]);
@@ -159,10 +160,10 @@ describe("test async module: ", function() {
 
       assert.equal(0, success.callCount);
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
-      promise.reject("test");
+      p.reject("test");
 
       assert.equal(4, fail.callCount);
       assert.equal("test", fail.args[0][0]);
@@ -178,16 +179,16 @@ describe("test async module: ", function() {
       var success = sinon.spy(),
           fail = sinon.spy();
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
-      promise.cancel();
-      promise.resolve();
+      p.cancel();
+      p.resolve();
 
       assert.equal(0, success.callCount);
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
       assert.equal(0, success.callCount);
 
@@ -199,31 +200,31 @@ describe("test async module: ", function() {
       var success = sinon.spy(),
           fail = sinon.spy();
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
-      promise.cancel();
-      promise.reject();
+      p.cancel();
+      p.reject();
 
       assert.equal(0, fail.callCount);
 
-      promise.then(success, fail);
-      promise.then(success, fail);
+      p.then(success, fail);
+      p.then(success, fail);
 
       assert.equal(0, fail.callCount);
 
     });
 
 
-    it("if resolved with a promise it should defer resolution until the promise resolves", function(done) {
+    it("if resolved with a p it should defer resolution until the p resolves", function(done) {
 
       var success = sinon.spy(),
-          p = Promise.spawn();
+          p = promise();
 
-      promise.then(success);
-      promise.then(success);
+      p.then(success);
+      p.then(success);
 
-      promise.resolve(p);
+      p.resolve(p);
 
       assert.equal(0, success.callCount);
 
@@ -249,24 +250,81 @@ describe("test async module: ", function() {
 
   describe("function when", function() {
 
-    it("should return a new resolved Promise if passed a non promise value", function() {
+    it("should return a new resolved Promise if passed a non p value", function() {
 
-      assert.equal(true, Promise.isPrototypeOf(when(10)));
+      assert.equal(true, promise.proto.isPrototypeOf(when(10)));
       assert.equal(0, when(10).status);
 
     });
 
     it("should return it's param if passed a Promise", function() {
 
-      var p = Promise.spawn(50);
+      var p = promise(50);
 
-      assert.notEqual(p, when(Promise.spawn()));
+      assert.notEqual(p, when(promise()));
       assert.equal(p, when(p));
+
+    });
+
+  });
+
+
+  describe("function whenAll", function() {
+
+    it("should resolve it's promise when all it's parameters have resolved", function(done) {
+
+      var spy = sinon.spy();
+      var p = promise();
+
+      whenAll([
+        when(10),
+        when(20),
+        30,
+        p
+      ]).then(spy);
+
+      setTimeout(function () {
+
+        p.resolve(40);
+
+        assert.equal(10, spy.args[0][0][0]);
+        assert.equal(20, spy.args[0][0][1]);
+        assert.equal(30, spy.args[0][0][2]);
+        assert.equal(40, spy.args[0][0][3]);
+
+        done();
+
+      }, 20);
+
+    });
+
+    it("should reject it's promise if any of the parameter promises reject", function(done) {
+
+      var spy = sinon.spy();
+      var p = promise();
+
+      whenAll([
+        when(10),
+        when(20),
+        30,
+        p
+      ]).then(null, spy);
+
+      setTimeout(function () {
+
+        p.reject(40);
+
+        assert.equal(40, spy.args[0][0]);
+
+        done();
+
+      }, 20);
 
     });
 
 
   });
+
 
 
 });

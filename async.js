@@ -1,25 +1,19 @@
 /**
-
-  @description  async functions
+  @description  a promise implementation
   @author       si@ibrokethat.com
-
 */
-require("Object");
 
-var is       = require("is");
-var func     = require("func");
-var iter     = require("iter");
+
+var is       = require('is');
+var func     = require('func');
 var enforce  = is.enforce;
 var typeOf   = is.typeOf;
 var lateBind = func.lateBind;
 var bind     = func.bind;
-var toArray  = iter.toArray;
-var Promise;
+var proto;
 
-/**
-  @description  a lightweight promise implementation
-*/
-Promise = {
+
+proto = {
 
 
   STATUS_PENDING: -1,
@@ -83,7 +77,7 @@ Promise = {
 
     if (this.status === this.STATUS_CANCELLED) return;
 
-    if (typeOf(Promise, result)) {
+    if (typeOf(proto, result)) {
       result.then(
         bind(this, this.resolve),
         bind(this, this.reject)
@@ -114,28 +108,14 @@ Promise = {
   @description  resolve the promise
   @param        {any} result
 */
-Promise.resolve = lateBind(Promise._exhaust, Promise.STATUS_RESOLVED);
+proto.resolve = lateBind(proto._exhaust, proto.STATUS_RESOLVED);
 
 
 /**
   @description  reject the promise
   @param        {any} result
 */
-Promise.reject = lateBind(Promise._exhaust, Promise.STATUS_REJECTED);
-
-
-
-
-/**
-  @description  wraps a value in a promise unless it already is one
-  @param        {any} promise or value
-  @return       {Promise}
-*/
-function when(value) {
-
-  return typeOf(Promise, value) ? value : Promise.spawn(value);
-
-}
+proto.reject = lateBind(proto._exhaust, proto.STATUS_REJECTED);
 
 
 
@@ -145,20 +125,66 @@ function when(value) {
   @param        {any} args1...
   @return       {Promise}
 */
-function promise (func) {
+function promise (value) {
 
-  var p    = Promise.spawn();
-  var args = toArray(arguments, 1);
-
-  args.push(p);
-  func.apply(null, args);
+  var p = Object.create(proto);
+  p.__init__(value);
 
   return p;
+}
 
+promise.proto = proto;
 
+/**
+  @description  wraps a value in a promise unless it already is one
+  @param        {any} value promise or value
+  @return       {promise}
+*/
+function when (value) {
+
+  return typeOf(proto, value) ? value : promise(value);
 }
 
 
-exports.Promise = Promise;
-exports.when    = when;
+
+/**
+  @description  resolves a promise after all its parameters have resolved
+  @param        {array} args An array of promises or values
+  @return       {promise}
+*/
+function whenAll (args) {
+
+  var p;
+  var f;
+  var i = 0;
+  var l = args.length;
+  var results = [];
+
+  p = promise();
+
+  f = function() {
+
+    when(args[i++]).then(function(data) {
+
+      results.push(data);
+
+      if(i < l) {
+        f();
+      }
+      else {
+        p.resolve(results);
+      }
+      return data;
+    },
+    bind(p, p.reject));
+  };
+
+  f();
+
+  return p;
+}
+
+
 exports.promise = promise;
+exports.when = when;
+exports.whenAll = whenAll;

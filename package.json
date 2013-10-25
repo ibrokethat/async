@@ -1,13 +1,12 @@
 {
   "name": "async",
   "description": "ibrokethat promises",
-  "version": "0.0.1",
+  "version": "0.0.2",
   "author": "si@ibrokethat.com",
   "contributors": [
     { "name": "Simon Jefford", "email": "si@ibrokethat.com" }
   ],
   "dependencies": {
-    "Object": "git+ssh://git@github.com:ibrokethat/Object",
     "is": "git+ssh://git@github.com:ibrokethat/is",
     "iter": "git+ssh://git@github.com:ibrokethat/iter",
     "func": "git+ssh://git@github.com:ibrokethat/func"
