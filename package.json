@@ -1,7 +1,7 @@
 {
   "name": "async",
   "description": "ibrokethat promises",
-  "version": "0.0.3",
+  "version": "0.0.4",
   "author": "si@ibrokethat.com",
   "contributors": [
     { "name": "Simon Jefford", "email": "si@ibrokethat.com" }
