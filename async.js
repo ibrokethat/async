@@ -21,6 +21,7 @@ proto = {
   STATUS_REJECTED: 1,
   STATUS_CANCELLED: 2,
 
+  _timer: null,
 
   __init__: function(value) {
 
@@ -67,6 +68,18 @@ proto = {
 
 
   /**
+    @description  sets the timeout to fire after a specific interval
+    @param        {function} resolve
+    @param        {function} reject
+    @return       {this}
+  */
+  timeout: function (time, message) {
+
+    this._timer = setTimeout(bind(this, this.reject, message), time);
+
+  },
+
+  /**
     @description  fires all the callbacks
     @param        {number} status
     @param        {any} result
@@ -74,7 +87,7 @@ proto = {
   _exhaust: function (status, result) {
 
     var callback;
-
+    clearTimeout(this._timer);
     if (this.status === this.STATUS_CANCELLED) return;
 
     if (typeOf(proto, result)) {
@@ -88,12 +101,7 @@ proto = {
     while (this.deferreds.length) {
 
       callback = this.deferreds.shift()[status];
-
-      if (typeof callback === "function") {
-
-        callback(result);
-
-      }
+      callback(result);
 
     }
 
@@ -129,7 +137,6 @@ function promise (value) {
 
   var p = Object.create(proto);
   p.__init__(value);
-
   return p;
 }
 

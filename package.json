@@ -13,7 +13,8 @@
   },
   "devDependencies": {
     "mocha": "1.2.x",
-    "sinon": "1.3.x"
+    "sinon": "1.3.x",
+    "promises-aplus-tests": "*"
   },
   "keywords": ["ibrokethat", "async"],
   "repository": {
@@ -26,7 +27,7 @@
   "main": "async.js",
   "scripts": {
     "prepublish" : "npm prune",
-    "test": "mocha -u bdd"
+    "test": "mocha -u bdd --reporter spec"
   },
   "engines": { "node": "*" }
 }

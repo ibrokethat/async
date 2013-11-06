@@ -216,7 +216,7 @@ describe("test async module: ", function() {
     });
 
 
-    it("if resolved with a p it should defer resolution until the p resolves", function(done) {
+    it("should defer resolution until the p resolves if it is resolved with a p", function(done) {
 
       var success = sinon.spy(),
           p = promise();
@@ -241,8 +241,69 @@ describe("test async module: ", function() {
 
     });
 
+    it("should reject with a fail message if the timeout is set", function(done) {
 
+      var success = sinon.spy();
+      var fail = sinon.spy();
+      var msg = "message";
+      var p = promise();
 
+      p.then(success, fail);
+      p.timeout(10, msg);
+
+      setTimeout(function() {
+
+        assert.equal(0, success.callCount);
+        assert.equal(1, fail.callCount);
+        assert.equal(msg, fail.args[0][0]);
+
+        done();
+
+      }, 100);
+
+    });
+
+    it("should not reject with a fail message if already resolved", function(done) {
+
+      var success = sinon.spy();
+      var fail = sinon.spy();
+      var msg = "message";
+      var p = promise();
+
+      p.then(success, fail);
+      p.timeout(10, msg);
+      p.resolve(msg);
+      setTimeout(function() {
+
+        assert.equal(1, success.callCount);
+        assert.equal(0, fail.callCount);
+
+        done();
+
+      }, 100);
+
+    });
+
+    it("should not reject with a fail message if already canceled", function(done) {
+
+      var success = sinon.spy();
+      var fail = sinon.spy();
+      var msg = "message";
+      var p = promise();
+
+      p.then(success, fail);
+      p.timeout(10, msg);
+      p.cancel();
+      setTimeout(function() {
+
+        assert.equal(0, success.callCount);
+        assert.equal(0, fail.callCount);
+
+        done();
+
+      }, 100);
+
+    });
 
   });
 
