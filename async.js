@@ -10,6 +10,7 @@ var enforce  = is.enforce;
 var typeOf   = is.typeOf;
 var lateBind = func.lateBind;
 var bind     = func.bind;
+var partial  = func.partial;
 var proto;
 
 
@@ -102,6 +103,7 @@ proto = {
 
       callback = this.deferreds.shift()[status];
       callback(result);
+      // setImmediate(partial(callback, result));
 
     }
 

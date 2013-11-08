@@ -27,7 +27,8 @@
   "main": "async.js",
   "scripts": {
     "prepublish" : "npm prune",
-    "test": "mocha -u bdd --reporter spec"
+    "test": "mocha -u bdd --reporter spec",
+    "stufy": "&& promises-aplus-tests test/adapter"
   },
   "engines": { "node": "*" }
 }

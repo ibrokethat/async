@@ -100,7 +100,7 @@ describe("test async module: ", function() {
     });
 
 
-    it("should immediately resolve if created with an initial value", function() {
+    it("should immediately resolve if created with an initial value", function(done) {
 
       var r = 0,
           p = promise(10);
@@ -110,9 +110,10 @@ describe("test async module: ", function() {
 
       p.then(function(v) {
         r = v;
+        assert.equal(10, r);
+        done();
       });
 
-      assert.equal(10, r);
 
     });
 
