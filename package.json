@@ -7,8 +7,8 @@
     { "name": "Simon Jefford", "email": "si@ibrokethat.com" }
   ],
   "dependencies": {
-    "func": "https://api.github.com/repos/ibrokethat/func/tarball#v0.0.4",
     "is": "https://api.github.com/repos/ibrokethat/is/tarball#v0.0.4",
+    "func": "https://api.github.com/repos/ibrokethat/func/tarball#v0.0.4",
     "iter": "https://api.github.com/repos/ibrokethat/iter/tarball#v0.0.4"
   },
   "devDependencies": {
