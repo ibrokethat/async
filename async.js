@@ -4,8 +4,8 @@
 */
 
 
-var is       = require('is');
-var func     = require('func');
+var is       = require('super-is');
+var func     = require('super-func');
 var enforce  = is.enforce;
 var typeOf   = is.typeOf;
 var lateBind = func.lateBind;
